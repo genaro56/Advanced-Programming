@@ -1,37 +1,37 @@
 /*
 Author: Genaro Martínez S.
 id: A01566055
-date: 20/02/2020
+date: 13/03/2020
 
-display the size of types and use the function sizeof().
+display the size of union types and use the function sizeof().
 */
 
 #include <stdio.h>
 
+// initialize data union to store data types.
+union Data {
+   int i;
+   double d;
+   char str[100];
+} data;  
+
 int main(int argc, char const *argv[])
 {
-    int intType;
-    float floatType;
-    double doubleType;
-    char charType;
-
+    char str[100];
     printf("int type\n");
-    scanf("%d", &intType);
-
-    printf("float type\n");
-    scanf("%f", &floatType);
+    scanf("%d", &data.i);
 
     printf("double type\n");
-    scanf("%lf", &doubleType);
+    scanf("%lf", &data.d);
 
-    printf("char type\n");
-    scanf(" %c", &charType);
-
+    printf("string type:\n");
+    scanf("%s", &str);
+    strcpy(data.str, str);
     // sizeof evaluates the size of a variable
-    printf("Your integer <%d> storage size is => %ld bytes\n", intType, sizeof(intType));
-    printf("Your float <%f> storage size is => %ld bytes\n", floatType, sizeof(floatType));
-    printf("Your double <%f> storage size is => %ld bytes\n", doubleType, sizeof(doubleType));
-    printf("Your char <%c> storage size is => %ld byte\n", charType, sizeof(charType));
+    printf("Your integer <%d> storage size is => %ld bytes\n", data.i, sizeof(data.i));
+    printf("Your double <%f> storage size is => %ld bytes\n", data.d, sizeof(data.d));
+    printf("Your string <%s> storage size is => %ld byte\n", data.str, sizeof(data.str));
+    printf("Your data union storage size => %ld bytes\n", sizeof(data));
 
     return 0;
 }
