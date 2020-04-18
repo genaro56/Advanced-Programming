@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "ctype.h": "c",
         "string": "c",
-        "random": "c"
+        "random": "c",
+        "system_error": "c"
     }
 }
