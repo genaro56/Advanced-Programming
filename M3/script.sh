@@ -1,0 +1,1 @@
+grep -o '#[[:alpha:]]*<' index.html >> results.txt
