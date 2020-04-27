@@ -17,31 +17,27 @@ use the routines to display several types of data from strings.
 */
 
 
-int hexToInt(const char *s, unsigned long *result)
-{
-    if ((*s == '0') && (s[1] == 'x' || s[1] == 'X')) {
-        s += 2;
-    }
-    for (*result = 0; *s; ++s) {
-        int n = 0;
-        if (*s >= 'a' && *s <= 'f') {
-            n = *s - 'a' + 10;
-        } else if (*s >= 'A' && *s <= 'F') {
-            n = *s - 'A' + 10;
-        } else if (*s >= '0' && *s <= '9') {
-            n = *s - '0';
+unsigned int hexToInt(const char *hex)
+  {
+    unsigned int result = 0;
+    while (*hex)
+      {
+        if (*hex > 47 && *hex < 58)
+          result += (*hex - 48);
+        else if (*hex > 64 && *hex < 71)
+          result += (*hex - 55);
+        else if (*hex > 96 && *hex < 103)
+          result += (*hex - 87);
+        else
+        {
+            printf("wrong character detected");
+            break;
         }
-        else if (*result > (ULONG_MAX/16)) {
-            errno = ERANGE;
-            return -1;
-        } else {
-            errno = EINVAL;
-            return -1;
-        }
-        *result *= 16;
-        *result += (unsigned long) n;
-    }
-}
+        if (*++hex)
+          result <<= 4;
+      }
+    return result;
+  }
 
 int stringBinToInt(const char *str)
 {
@@ -56,13 +52,15 @@ int stringBinToInt(const char *str)
     }
     return result;
 }
+double pointerToDouble(const char *str) {
+    double a = atof(str);
+    return a;
+}
 
-int hexToInt(const char *s, unsigned long *res);
+unsigned int hexToInt(const char *hex);
 int stringBinToInt(const char *str);
-
 int main(int argc, char const *argv[])
 {
-    unsigned long result;
     char hex[MAXBIN];
     char bin[MAXHEX];
     char dbl[MAXDBL];
@@ -76,16 +74,12 @@ int main(int argc, char const *argv[])
     scanf("%s", &hex);
     printf("dbl: \n");
     scanf("%s", &dbl);
-    a = atof(dbl);
 
     printf("Binary value in int = %d \n", stringBinToInt(bin));
     printf("\n");
-    if (0 > hexToInt(&hex[1], &result))
-        return EXIT_FAILURE;
-    else
-        printf("Hexadecimal value in integer = %lu\n", result);
-        printf("\n");
+    printf("Hexadecimal value in decimal = %lu\n", hexToInt(hex));
+    printf("\n");
 
-	printf ("double point number in dbl = %f\n" , a);
+	printf ("double point number in dbl = %f\n" ,pointerToDouble(dbl));
     return 0;
 }

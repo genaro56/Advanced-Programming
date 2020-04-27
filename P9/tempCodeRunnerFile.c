@@ -1,1 +1,1 @@
-FFFFF
+    double a, b;
