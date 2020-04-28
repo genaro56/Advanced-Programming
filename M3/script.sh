@@ -1,1 +1,2 @@
-grep -o '#[[:alpha:]]*<' index.html >> results.txt
+#!/bin/bash 
+echo sort ./results.txt | uniq -c
