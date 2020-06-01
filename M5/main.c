@@ -3,14 +3,16 @@
 #include <Windows.h>
 #include <pthread.h>
 /**
+ * MISSION 05:
  * author: Genaro Martinez A01566055
  * 
  * Description: using the Windows Thread API to
- * calculate an aproximation of PI by joining different thread after
- * each calculation is done.
- * 
+ * calculate an aproximation of PI by joining each different thread 
+ * after its critical section is done.
 */
+
 #define AMOUNT_OF_RECTANGLES 100000000
+#define NUMBER_OF_THREADS 53
 
 double deltaX;
 double accum = 0.0;
@@ -22,45 +24,53 @@ DWORD WINAPI threadRoutine(LPVOID p)
   double fdx;
   double localAccum = 0.0;
   double *initialX = (double *)p;
-  double finalX = (initialX) + deltaX(AMOUNT_OF_RECTANGLES / 53);
-  printf("x=%lf\n", *initialX);
+  // divides the number of rectangles in circle by number of threads
+  double finalX = (*initialX) + deltaX * (AMOUNT_OF_RECTANGLES / NUMBER_OF_THREADS);
   for (x = *initialX; x < finalX; x += deltaX)
   {
+    // augments accum fdx
     fdx = 4.0 / (1.0 + x * x);
     localAccum = localAccum + (fdx * deltaX);
   }
+  // begins critical section
   EnterCriticalSection(&cs);
   accum += localAccum;
   LeaveCriticalSection(&cs);
+  return accum;
 }
 
 void main()
 {
-  pthread_t tid[53];
-  int i, rc;
+  pthread_t tid[NUMBER_OF_THREADS];
+  int i;
   time_t start, stop;
-  HANDLE t[53];
-  double param[53];
+  HANDLE t[NUMBER_OF_THREADS];
+  double param[NUMBER_OF_THREADS];
   deltaX = 1.0 / AMOUNT_OF_RECTANGLES;
   start = clock();
+  // initializes critical section.
   InitializeCriticalSection(&cs);
-  // Create the threads
-  printf("initializing threads...\n");
-  for (i = 0; i < 53; i++)
+  printf() for (i = 0; i < NUMBER_OF_THREADS; i++)
   {
-    // changed the calculation per param to 
-    param[i] = (1.0 / 53) * i;
-    rc = pthread_create(&tid[i], NULL, (void()(void *))threadRoutine, &param[i]);
+    param[i] = (1.0 / NUMBER_OF_THREADS) * i;
+    /**
+     * CRITICAL Section call.
+     * create threads and initialize them in void values.
+     * then call the thread routine to calculate the value
+     * in the critical section.
+     */
+    pthread_create(&tid[i], NULL, (void *(*)(void *))threadRoutine, &param[i]);
   }
 
-  for (i = 0; i < 53; i++)
+  for (i = 0; i < NUMBER_OF_THREADS; i++)
   {
-    rc = pthread_join(tid[i], NULL);
+    //Wait for all threads and join the accum
+    pthread_join(tid[i], NULL);
   }
-
-  WaitForMultipleObjects(53, &t[0], TRUE, INFINITE);
-  // Wait for the threads to finish
+  // deletes the critical section value.
   DeleteCriticalSection(&cs);
   stop = clock();
-  printf("aproximation of PI: %1.15lf (%ld)\n", accum, stop - start);
+  // returns cacultated PI.
+  printf("PI aproximate: %1.15lf (%ld)\n", accum, stop - start);
+  pthread_exit(NULL);
 }

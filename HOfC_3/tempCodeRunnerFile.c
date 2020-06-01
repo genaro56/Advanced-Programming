@@ -35,7 +35,7 @@ void quickSort()
 {
     int min;
 
-    for (int i = 0; i < MAX_STR - 1; i++)
+    for (int i = 0; i < MAX_STR-1; i++)
     {
         min = i;
         for (int j = i + 1; j < MAX_STR; j++)
@@ -99,20 +99,23 @@ int main()
         printf("Could not open file the file");
         return 1;
     }
-    while (!feof(fp) && fgets(str, MAX_LENGTH, fp))
+    while (!feof(fp) && fgets(str, MAX_LENGTH, fp)) 
     {
-        char *tokens = strtok(str, " "),
-             *tk1 = strtok(NULL, " "),
-             *tk2 = strtok(NULL, " ");
+        char *tokens = strtok(str, " ");
+        char *deg = strtok(NULL, " ");
+
+        char *decimal = strtok(NULL, " ");
+
+        // adds all coordinates to structures
         if (strcmp(tokens, "Latitude:") == 0)
         {
-            strcpy(coordinates[fileIndex].ltD, tk1);
-            coordinates[fileIndex].latitud = atof(tk2);
+            strcpy(coordinates[fileIndex].ltD, deg);
+            coordinates[fileIndex].latitud = atof(decimal);
         }
         else
         {
-            strcpy(coordinates[fileIndex].lgD, tk1);
-            coordinates[fileIndex].longitud = atof(tk2);
+            strcpy(coordinates[fileIndex].lgD, deg);
+            coordinates[fileIndex].longitud = atof(decimal);
             fileIndex++;
         }
     }
